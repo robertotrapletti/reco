@@ -2,14 +2,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using Reco;
 
+
 namespace RecoTest
 {
     [TestClass]
-    public class UnitTest1
+    public class RecordTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void createFromImage()
         {
+            Assert.IsFalse(Reco.Reco.addImage("test", "ciao"));
             Assert.IsTrue("a".init()); 
         }
     }
