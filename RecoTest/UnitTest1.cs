@@ -10,7 +10,7 @@ namespace RecoTest
         [TestMethod]
         public void TestMethod1()
         {
-            Assert.IsTrue("a".init());
+            Assert.IsTrue("a".init()); 
         }
     }
 }
