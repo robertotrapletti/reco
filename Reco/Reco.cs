@@ -14,8 +14,17 @@ namespace Reco
         }
 
         public static bool addImage(String path, String name) {
-            Record record = Record.createFromImage(path, name);
-            return true;
+            Record record;
+            try
+            {
+                record = Record.createFromImage(path, name);
+                return true;
+            }
+            catch (Exception e) {
+                return false;
+            }
+            
         }
+      
     }
 }
