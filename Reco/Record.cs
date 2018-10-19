@@ -8,6 +8,7 @@ using Emgu.CV.XFeatures2D;
 
 namespace PrivateReco
 {
+    [Serializable]
     class Record
     {
         ///////////////////////////////////////////////////////////
@@ -29,7 +30,7 @@ namespace PrivateReco
             this.descriptors = new Mat();
         }
 
-        public static Record createFromImage(String path, String name) {
+        public static Record CreateFromImage(String path, String name) {
             // new Record
             Record newRecord = new Record(name);
 
