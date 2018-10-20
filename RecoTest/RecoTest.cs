@@ -8,27 +8,38 @@ namespace RecoTest
     [TestClass]
     public class RecoTest
     {
-        [TestMethod]
-        public void GetInstanceAndLoadTest()
+        [TestInitialize]
+        public void TestInitialize()
         {
-            //Check consistency of Reco instance and records field without input file
-            Assert.IsNotNull(Reco.GetInstance());
-            Assert.AreEqual(0,Reco.GetInstance().getNumberOfRecords());
-
-            //load a repository.bin test file
-            Assert.IsTrue(Reco.GetInstance().Load("repository.bin"));
-
-            //Check consistency of Reco instance and records field with input test file
-            Assert.AreEqual(4, Reco.GetInstance().getNumberOfRecords());
-
+            Reco.GetInstance().purgeRecoInstance();
         }
 
         [TestMethod]
         public void AddImageAndSaveTest()
         {
-            Assert.IsFalse(Reco.GetInstance().AddImage("notFound.png","notFoundImage"));
-            Assert.IsTrue(Reco.GetInstance().AddImage("Resources/testImage1.png","testImage"));
-            Assert.IsTrue(Reco.GetInstance().Save());
+            Assert.IsFalse(Reco.GetInstance().AddImage("notFound.png", "notFoundImage"));
+            Assert.IsTrue(Reco.GetInstance().AddImage("Resources/testImage1.png", "testImage1"));
+            Reco.GetInstance().AddImage("Resources/testImage2.png", "testImage2");
+            Reco.GetInstance().AddImage("Resources/testImage3.png", "testImage3");
+            Reco.GetInstance().AddImage("Resources/testImage4.png", "testImage4");
+            Assert.AreEqual(4, Reco.GetInstance().GetNumberOfRecords());
+            Assert.IsTrue(Reco.GetInstance().Save("Resources/sampleRepository.bin"));
         }
+        [TestMethod]
+        public void GetInstanceAndLoadTest()
+        {
+            //Check consistency of Reco instance and records field without input file
+            Assert.IsNotNull(Reco.GetInstance());
+            Assert.AreEqual(0,Reco.GetInstance().GetNumberOfRecords());
+
+            //load a repository.bin test file
+            Assert.IsTrue(Reco.GetInstance().Load("Resources/sampleRepository.bin"));
+
+            //Check consistency of Reco instance and records field with input test file
+            Assert.AreEqual(4, Reco.GetInstance().GetNumberOfRecords());
+
+        }
+
+        
     }
 }

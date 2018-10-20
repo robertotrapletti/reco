@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Reco</name>
+    </assembly>
+    <members>
+        <member name="M:RecoLibrary.Reco.GetInstance">
+            <summary>
+            Public Methods
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:RecoLibrary.Reco.AddImage(System.String,System.String)">
+            <summary>
+            Create a new Record Object from an image and adds it to the repository
+            </summary>
+            <param name="imagePath">Image location</param>
+            <param name="name">Associated name</param>
+            <returns>Return true if the Record is created and successfully added to the repository, else false</returns>
+        </member>
+        <member name="M:RecoLibrary.Reco.RemoveImage(System.String)">
+            <summary>
+            Remove a Record Object from the repository
+            </summary>
+            <param name="name"></param>
+            <returns>Return true if the Record is found and correctly removed from the repository, else false</returns>
+        </member>
+        <member name="M:RecoLibrary.Reco.GetNumberOfRecords">
+            <summary>
+            Get the number of Records into the repository
+            </summary>
+            <returns>Return the number of Records into the repository</returns>
+        </member>
+        <member name="M:RecoLibrary.Reco.GetName(System.String)">
+            <summary>
+            Compares the given image with all Records inside the repository and return 
+            the associated name of the most similar image.
+            </summary>
+            <param name="imagePath">Path of the image to compare</param>
+            <returns>Return name if a match is found, else an empty String</returns>
+        </member>
+        <member name="M:RecoLibrary.Reco.GetNNames(System.String,System.Int32)">
+            <summary>
+            Get the firsts n associated names from the comparation of the given image with 
+            all Records inside the repository, sorted from the most similar
+            </summary>
+            <param name="imagePath">Path of the image to compare</param>
+            <param name="nResults">Expected number of names to return</param>
+            <returns>Return list of names or an empty list</returns>
+        </member>
+        <member name="F:PrivateRecord.Record.name">
+            Fields
+        </member>
+        <!-- Commento XML in formato non corretto ignorato per il membro 'M:PrivateRecord.Record.#ctor(System.String)' -->
+    </members>
+</doc>

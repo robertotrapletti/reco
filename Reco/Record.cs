@@ -6,10 +6,13 @@ using Emgu.CV.Util;
 using Emgu.CV.CvEnum;
 using Emgu.CV.XFeatures2D;
 
-namespace PrivateReco
+namespace PrivateRecord
 {
-    [Serializable]
-    class Record
+    /// <summary>
+    /// Object to save the result of a processed image. It saves the features detected, their descriptors and the realtive associated name.
+    /// </summary>
+    [Serializable()]
+    public class Record
     {
         ///////////////////////////////////////////////////////////
         ///Fields
@@ -30,6 +33,12 @@ namespace PrivateReco
             this.descriptors = new Mat();
         }
 
+        /// <summary>
+        /// Create a new Record Object from an image
+        /// </summary>
+        /// <param name="path">The image path</param>
+        /// <param name="name">The desired associated name</param>
+        /// <returns>Return a Record Object</returns>
         public static Record CreateFromImage(String path, String name) {
             // new Record
             Record newRecord = new Record(name);

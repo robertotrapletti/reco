@@ -38,7 +38,16 @@
 
   <ItemGroup>
     <None Update="Resources\testImage1.PNG">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\testImage2.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\testImage3.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\testImage4.PNG">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="x64\concrt140.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
