@@ -8,6 +8,9 @@ using System.Runtime.Serialization;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Resources;
+using Emgu.CV.Features2D;
+using Emgu.CV.Flann;
+using Emgu.CV.CvEnum;
 
 namespace RecoLibrary
 {
@@ -23,6 +26,7 @@ namespace RecoLibrary
             this.Load();
         }
 
+        
         /// <summary>
         /// Singleton
         /// </summary>
@@ -126,7 +130,42 @@ namespace RecoLibrary
         /// <param name="imagePath">Path of the image to compare</param>
         /// <returns>Return name if a match is found, else an empty String</returns>
         public String GetName(String imagePath) {
-            return null;
+            Record processingRecord = Record.CreateFromImage(imagePath, "");
+            var resultList = new List<KeyValuePair<String,int>>();
+            VectorOfVectorOfDMatch matches = new VectorOfVectorOfDMatch();
+            int k = 2;
+            double uniquenessThreshold = 0.8;
+            Mat mask = new Mat();
+
+            records.ForEach(e=> {
+                //TODO da approfondire questa sintassi
+                using (Emgu.CV.Flann.LinearIndexParams ip = new Emgu.CV.Flann.LinearIndexParams())
+                using (Emgu.CV.Flann.SearchParams sp = new SearchParams())
+                using (DescriptorMatcher matcher = new FlannBasedMatcher(ip, sp))
+                {
+                    matcher.Add(e.KeyPoints);
+
+                    matcher.KnnMatch(processingRecord.KeyPoints, matches, k, null);
+                    mask = new Mat(matches.Size, 1, DepthType.Cv8U, 1);
+                    mask.SetTo(new MCvScalar(255));
+                    Features2DToolbox.VoteForUniqueness(matches, uniquenessThreshold, mask);
+
+                    // Calcluate the score based on matches size
+                    int score = 0;
+                    for (int i=0;i < matches.Size;i++) {
+                        if (mask.GetData(i)[0] == 0) continue;
+                        foreach (var item in matches[i].ToArray())
+                            ++score;
+                    }
+
+                    // Add score and record's name to the map
+                    resultList.Add(new KeyValuePair<string, int>(e.Name, score));
+                }
+            });
+
+            Utility.sortList(resultList);
+
+            return resultList[0].Key;
         }
 
         /// <summary>

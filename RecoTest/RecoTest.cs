@@ -40,6 +40,12 @@ namespace RecoTest
 
         }
 
-        
+        [TestMethod]
+        public void GetNameTest()
+        {
+           Reco.GetInstance().Load("Resources/sampleRepository.bin");
+           string name = Reco.GetInstance().GetName("Resources/imageToFind.jpeg");
+           // Assert.AreEqual(name, "testImage1");
+        }
     }
 }

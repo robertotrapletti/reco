@@ -37,6 +37,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Resources\imageToFind.jpeg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\testImage1.PNG">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

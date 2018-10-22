@@ -22,6 +22,9 @@ namespace PrivateRecord
         private readonly VectorOfKeyPoint keyPoint;
         private readonly Mat descriptors;
 
+        public VectorOfKeyPoint KeyPoints { get; }
+        public String Name { get; }
+
         ///////////////////////////////////////////////////////////
         /// Constructors & Factory pattern
         //////////////////////////////////////////////////////////
