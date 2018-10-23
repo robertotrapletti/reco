@@ -143,9 +143,9 @@ namespace RecoLibrary
                 using (Emgu.CV.Flann.SearchParams sp = new SearchParams())
                 using (DescriptorMatcher matcher = new FlannBasedMatcher(ip, sp))
                 {
-                    matcher.Add(e.KeyPoints);
+                    matcher.Add(e.Descriptors);
 
-                    matcher.KnnMatch(processingRecord.KeyPoints, matches, k, null);
+                    matcher.KnnMatch(processingRecord.Descriptors, matches, k, null);
                     mask = new Mat(matches.Size, 1, DepthType.Cv8U, 1);
                     mask.SetTo(new MCvScalar(255));
                     Features2DToolbox.VoteForUniqueness(matches, uniquenessThreshold, mask);

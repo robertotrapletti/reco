@@ -22,8 +22,9 @@ namespace PrivateRecord
         private readonly VectorOfKeyPoint keyPoint;
         private readonly Mat descriptors;
 
-        public VectorOfKeyPoint KeyPoints { get; }
-        public String Name { get; }
+        public VectorOfKeyPoint KeyPoints { get { return keyPoint; } }
+        public String Name { get { return name; } }
+        public Mat Descriptors { get { return descriptors; } }
 
         ///////////////////////////////////////////////////////////
         /// Constructors & Factory pattern
@@ -47,7 +48,7 @@ namespace PrivateRecord
             Record newRecord = new Record(name);
 
             //Preprocessing of the image
-            Mat image = CvInvoke.Imread(path, ImreadModes.Color);
+                Mat image = CvInvoke.Imread(path, ImreadModes.Color);
             UMat uImage = image.GetUMat(AccessType.Read);
             SURF surf = new SURF(400);
             surf.DetectAndCompute(uImage, null, newRecord.keyPoint, newRecord.descriptors, false);
