@@ -33,13 +33,23 @@
     <None Update="opencv_ffmpeg341.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\model\labels.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\model\mobilenet_v2_1.0_224_frozen.pb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="vcruntime140.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <Folder Include="Resources\model\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="TensorFlowSharp" Version="1.11.0" />
   </ItemGroup>
 
 </Project>

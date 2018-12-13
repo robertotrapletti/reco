@@ -40,6 +40,12 @@
     <None Update="Resources\imageToFind.jpeg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\monitor.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Resources\random.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\testImage1.PNG">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

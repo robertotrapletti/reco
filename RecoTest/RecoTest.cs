@@ -1,7 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using RecoLibrary;
-
+using System.Collections.Generic;
 
 namespace RecoTest
 {
@@ -46,6 +46,29 @@ namespace RecoTest
            Reco.GetInstance().Load("Resources/sampleRepository.bin");
            string name=Reco.GetInstance().GetName("Resources/imageToFind.jpeg");
            Assert.AreEqual(name, "testImage1");
+        }
+
+        [TestMethod]
+        public void GetNNameTest()
+        {
+            Reco.GetInstance().Load("Resources/sampleRepository.bin");
+            List<string> names = Reco.GetInstance().GetNNames("Resources/imageToFind.jpeg",2);
+            Assert.AreEqual(names[0], "testImage1");
+            Assert.AreEqual(names[1], "testImage2");
+        }
+
+        [TestMethod]
+        public void RemoveTest()
+        {
+            Reco.GetInstance().Load("Resources/sampleRepository.bin");
+            Assert.IsTrue(Reco.GetInstance().RemoveImage("testImage1"));
+        }
+
+        [TestMethod]
+        public void IsMonitorTest()
+        {
+            Assert.IsTrue(Reco.GetInstance().isMonitor("Resources/monitor.jpg"));
+            Assert.IsFalse(Reco.GetInstance().isMonitor("Resources/random.jpg"));
         }
     }
 }

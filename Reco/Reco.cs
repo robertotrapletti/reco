@@ -11,6 +11,9 @@ using System.Resources;
 using Emgu.CV.Features2D;
 using Emgu.CV.Flann;
 using Emgu.CV.CvEnum;
+using TensorFlow;
+using System.Net;
+using System.IO.Compression;
 
 namespace RecoLibrary
 {
@@ -21,8 +24,16 @@ namespace RecoLibrary
     {
         private static Reco instance;
         private List<Record> records;
+        static string dir, modelFile, labelsFile;
 
         private Reco() {
+            records = new List<Record>();
+            if (dir == null)
+            {
+                dir = "/tmp";
+                //Error ("Must specify a directory with -m to store the training data");
+            }
+            ModelFiles(dir);
             this.Load();
         }
 
@@ -62,7 +73,6 @@ namespace RecoLibrary
                 return true;
             }
             catch (Exception e) {
-                records = new List<Record>();
                 return false;
             }
         }
@@ -112,7 +122,7 @@ namespace RecoLibrary
         /// <param name="name"></param>
         /// <returns>Return true if the Record is found and correctly removed from the repository, else false</returns>
         public bool RemoveImage(String name) {
-            return false;
+            return records.Remove(records.Find(r=>r.Name.Equals(name)));
         }
 
         /// <summary>
@@ -129,15 +139,16 @@ namespace RecoLibrary
         /// </summary>
         /// <param name="imagePath">Path of the image to compare</param>
         /// <returns>Return name if a match is found, else an empty String</returns>
-        public String GetName(String imagePath) {
+        private List<KeyValuePair<String, int>> GetNameList(String imagePath)
+        {
             Record processingRecord = Record.CreateFromImage(imagePath, "");
-            var resultList = new List<KeyValuePair<String,int>>();
+            var resultList = new List<KeyValuePair<String, int>>();
             VectorOfVectorOfDMatch matches = new VectorOfVectorOfDMatch();
             int k = 2;
             double uniquenessThreshold = 0.8;
             Mat mask = new Mat();
 
-            records.ForEach(e=> {
+            records.ForEach(e => {
                 //TODO da approfondire questa sintassi
                 using (Emgu.CV.Flann.LinearIndexParams ip = new Emgu.CV.Flann.LinearIndexParams())
                 using (Emgu.CV.Flann.SearchParams sp = new SearchParams())
@@ -152,7 +163,8 @@ namespace RecoLibrary
 
                     // Calcluate the score based on matches size
                     int score = 0;
-                    for (int i=0;i < matches.Size;i++) {
+                    for (int i = 0; i < matches.Size; i++)
+                    {
                         if (mask.GetData(i)[0] == 0) continue;
                         foreach (var item in matches[i].ToArray())
                             ++score;
@@ -164,7 +176,17 @@ namespace RecoLibrary
             });
 
             Utility.sortList(resultList);
+            return resultList;
+        }
 
+        /// <summary>
+        /// Compares the given image with all Records inside the repository and return 
+        /// the associated name of the most similar image.
+        /// </summary>
+        /// <param name="imagePath">Path of the image to compare</param>
+        /// <returns>Return name if a match is found, else an empty String</returns>
+        public String GetName(String imagePath) {
+            var resultList = GetNameList(imagePath);
             return resultList[0].Key;
         }
 
@@ -176,8 +198,95 @@ namespace RecoLibrary
         /// <param name="nResults">Expected number of names to return</param>
         /// <returns>Return list of names or an empty list</returns>
         public List<String> GetNNames(String imagePath, int nResults) {
-            return null;
+            var resultList = GetNameList(imagePath).GetRange(0,nResults);
+            var resultStringList = new List<String>();
+            resultList.ForEach(r=>resultStringList.Add(r.Key));
+            return resultStringList;
         }
-      
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="imagePath"></param>
+        /// <returns></returns>
+        public Boolean isMonitor(String imagePath) {
+            var graph = new TFGraph();
+            // Load the serialized GraphDef from a file.
+            var model = File.ReadAllBytes(modelFile);
+
+            graph.Import(model, "");
+
+            var tensor = ImageUtil.CreateTensorFromImageFile(imagePath, TFDataType.Float);
+            var session = new TFSession(graph);
+            
+                var labels = File.ReadAllLines(labelsFile);
+                var runner = session.GetRunner();
+                runner.AddInput(graph["input"][0], tensor);
+                runner.Fetch(graph["MobilenetV2/Predictions/Reshape_1"][0]);
+
+                var output = runner.Run();
+
+                // Fetch the results from output:
+                TFTensor result = output[0];
+
+
+                // You can get the data in two ways, as a multi-dimensional array, or arrays of arrays, 
+                // code can be nicer to read with one or the other, pick it based on how you want to process
+                // it
+                bool jagged = true;
+
+                var bestIdx = 0;
+                float p = 0, best = 0;
+
+                if (jagged)
+                {
+                    var probabilities = ((float[][])result.GetValue(jagged: true))[0];
+                    for (int i = 0; i < probabilities.Length; i++)
+                    {
+                        if (probabilities[i] > best)
+                        {
+                            bestIdx = i;
+                            best = probabilities[i];
+                        }
+                    }
+
+                }
+                else
+                {
+                    var val = (float[,])result.GetValue(jagged: false);
+
+                    // Result is [1,N], flatten array
+                    for (int i = 0; i < val.GetLength(1); i++)
+                    {
+                        if (val[0, i] > best)
+                        {
+                            bestIdx = i;
+                            best = val[0, i];
+                        }
+                    }
+                }
+
+                Console.WriteLine($"best match: [{bestIdx}] {best * 100.0}% {labels[bestIdx]}");
+
+
+            return isMonitorOrSimilarLabel(labels[bestIdx]);
+
+        }
+
+        private bool isMonitorOrSimilarLabel(string v)
+        {
+            return v.Equals("Monitor", StringComparison.OrdinalIgnoreCase) ||
+                v.Equals("Screen", StringComparison.OrdinalIgnoreCase) ||
+                v.Equals("television", StringComparison.OrdinalIgnoreCase) ||
+                v.Equals("website", StringComparison.OrdinalIgnoreCase);
+        }
+
+        static void ModelFiles(string dir)
+        {
+            modelFile = "Resources/model/mobilenet_v2_1.0_224_frozen.pb";
+            labelsFile = "Resources/model/labels.txt";
+            if (File.Exists(modelFile) && File.Exists(labelsFile))
+                return;
+        }
     }
 }
