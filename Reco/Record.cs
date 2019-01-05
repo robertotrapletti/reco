@@ -5,6 +5,7 @@ using Emgu.CV;
 using Emgu.CV.Util;
 using Emgu.CV.CvEnum;
 using Emgu.CV.XFeatures2D;
+using Emgu.CV.Features2D;
 
 namespace PrivateRecord
 {
@@ -48,7 +49,7 @@ namespace PrivateRecord
             Record newRecord = new Record(name);
 
             //Preprocessing of the image
-                Mat image = CvInvoke.Imread(path, ImreadModes.Color);
+            Mat image = CvInvoke.Imread(path, ImreadModes.Color);
             UMat uImage = image.GetUMat(AccessType.Read);
             SURF surf = new SURF(400);
             surf.DetectAndCompute(uImage, null, newRecord.keyPoint, newRecord.descriptors, false);

@@ -46,6 +46,9 @@
     <None Update="Resources\random.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\sampleRepository.bin">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Resources\testImage1.PNG">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
