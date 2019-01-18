@@ -51,7 +51,7 @@ namespace PrivateRecord
             //Preprocessing of the image
             Mat image = CvInvoke.Imread(path, ImreadModes.Color);
             UMat uImage = image.GetUMat(AccessType.Read);
-            SURF surf = new SURF(400);
+            KAZE surf = new KAZE();
             surf.DetectAndCompute(uImage, null, newRecord.keyPoint, newRecord.descriptors, false);
 
             return newRecord;

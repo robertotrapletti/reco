@@ -14,6 +14,7 @@ using Emgu.CV.CvEnum;
 using TensorFlow;
 using System.Net;
 using System.IO.Compression;
+using Newtonsoft.Json;
 
 namespace RecoLibrary
 {
@@ -143,12 +144,12 @@ namespace RecoLibrary
         {
             Record processingRecord = Record.CreateFromImage(imagePath, "");
             var resultList = new List<KeyValuePair<String, int>>();
-            VectorOfVectorOfDMatch matches = new VectorOfVectorOfDMatch();
-            int k = 2;
-            double uniquenessThreshold = 0.8;
-            Mat mask = new Mat();
-
+           
             records.ForEach(e => {
+                VectorOfVectorOfDMatch matches = new VectorOfVectorOfDMatch();
+                int k = 2;
+                double uniquenessThreshold = 0.8;
+                Mat mask = new Mat();
                 //TODO da approfondire questa sintassi
                 using (Emgu.CV.Flann.LinearIndexParams ip = new Emgu.CV.Flann.LinearIndexParams())
                 using (Emgu.CV.Flann.SearchParams sp = new SearchParams())

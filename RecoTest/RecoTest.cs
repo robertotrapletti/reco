@@ -23,7 +23,7 @@ namespace RecoTest
             Reco.GetInstance().AddImage("Resources/testImage3.png", "testImage3");
             Reco.GetInstance().AddImage("Resources/testImage4.png", "testImage4");
             Assert.AreEqual(4, Reco.GetInstance().GetNumberOfRecords());
-            Assert.IsTrue(Reco.GetInstance().Save("Resources/sampleRepository.bin"));
+            Assert.IsTrue(Reco.GetInstance().Save("Resources/sampleRepo.json"));
         }
         [TestMethod]
         public void GetInstanceAndLoadTest()
@@ -70,5 +70,6 @@ namespace RecoTest
             Assert.IsTrue(Reco.GetInstance().isMonitor("Resources/monitor.jpg"));
             Assert.IsFalse(Reco.GetInstance().isMonitor("Resources/random.jpg"));
         }
+        
     }
 }
